@@ -3,848 +3,239 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Relatório de Membros da Igreja</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Relatório de Membros - ADpaz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #4CAF50;
-            --primary-dark: #388E3C;
-            --secondary-color: #6c757d;
-            --text-dark: #212529;
-            --text-medium: #495057;
-            --text-light: #6c757d;
-            --bg-light: #f8f9fa;
-            --card-bg: #ffffff;
-            --border-light: #e9ecef;
-            --shadow-light: rgba(0, 0, 0, 0.05);
-            --shadow-medium: rgba(0, 0, 0, 0.1);
-        }
-
         body {
-            font-family: 'Inter', Arial, sans-serif;
-            background: var(--bg-light);
-            margin: 0;
-            padding: 20px;
-            color: var(--text-dark);
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            line-height: 1.6;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            background: var(--card-bg);
-            padding: 35px 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px var(--shadow-medium);
-            box-sizing: border-box;
-            text-align: center;
-        }
-
-        h1 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 35px;
+        .header-title {
+            color: #4CAF50;
             font-weight: 800;
-            font-size: 2.8rem;
-            letter-spacing: -0.02em;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
         }
-        #pageTitle {
-            color: var(--primary-color);
-            font-weight: 800;
-            font-size: 2.8rem;
-            letter-spacing: -0.02em;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
-            margin-bottom: 10px;
-        }
-
-        .filters-area {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 40px;
-            align-items: flex-end;
-            flex-wrap: wrap;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border-light);
-        }
-
-        .filter-group {
-            flex: 1;
-            min-width: 200px;
-        }
-
-        .filters-area label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 0.95em;
-            color: var(--text-light);
-            font-weight: 600;
-        }
-
-        .filters-area input,
-        .filters-area select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--border-light);
-            border-radius: 8px;
-            font-size: 1em;
-            box-shadow: inset 0 1px 3px var(--shadow-light);
-            box-sizing: border-box;
-            color: var(--text-dark);
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-        .filters-area input:focus,
-        .filters-area select:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
-        }
-
-        .filters-area button {
-            padding: 12px 25px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            font-weight: 600;
-            transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            flex-shrink: 0;
-            white-space: nowrap;
-        }
-        .filters-area button:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-        }
-        .filters-area button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .filters-area button#resetButton {
-            background-color: var(--secondary-color);
-        }
-        .filters-area button#resetButton:hover {
-            background-color: #5a6268;
-        }
-
-        #memberCountDisplay {
-            text-align: center;
-            font-size: 1.1em;
-            font-weight: 600;
-            color: var(--text-medium);
-            margin-bottom: 20px;
-        }
-
-        #loadingMessage, #errorMessage, #noDataMessage {
-            text-align: center;
-            padding: 25px;
-            font-size: 1.2em;
-            color: var(--text-medium);
-            font-weight: 600;
-            margin-top: 30px;
-            border-radius: 10px;
-            background: var(--bg-light);
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.05);
-        }
-
-        #loadingMessage { color: var(--primary-dark); background: #e8f5e9; }
-        #errorMessage { color: #dc3545; background: #f8d7da; }
-        #noDataMessage { color: var(--text-light); font-style: italic; background: #e2e3e5; }
-
-        #membersGrid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .member-card {
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 6px 20px var(--shadow-light);
+        /* Estilização da Foto Quadrada Arredondada */
+        .photo-container {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
             overflow: hidden;
-            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 30px;
-            text-align: center;
-            border: 1px solid var(--border-light);
-            position: relative;
+            border: 3px solid #f1f5f9;
         }
-
-        .member-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px var(--shadow-medium);
-        }
-
-        .card-id {
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            font-size: 0.9em;
-            font-weight: 600;
-            color: var(--primary-color);
-            background-color: rgba(76, 175, 80, 0.1);
-            padding: 4px 8px;
-            border-radius: 5px;
-            letter-spacing: 1px;
-            z-index: 10;
-        }
-
-        .card-photo {
-            width: 180px;
-            height: 180px;
-            border-radius: 8%;
-            object-fit: cover;
-            border: 1px solid var(--primary-color);
-            margin-bottom: 20px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: border-color 0.3s ease;
-        }
-        .member-card:hover .card-photo {
-            border-color: var(--primary-dark);
-        }
-
-        .card-name {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 12px;
-            line-height: 1.2;
-            word-break: break-word;
-        }
-
-        .card-details-list {
+        .photo-container img {
             width: 100%;
-            text-align: left;
-            margin-top: 15px;
-            padding-bottom: 30px;
+            height: 100%;
+            object-fit: cover;
         }
-
-        .card-detail-item {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 10px;
-            line-height: 1.4;
-        }
-
-        .card-detail-item strong {
-            font-size: 0.95em;
-            color: var(--text-light);
-            margin-bottom: 2px;
-            font-weight: 600;
-            text-align: left;
-        }
-
-        .card-detail-item span {
-            font-size: 1em;
-            color: var(--text-medium);
-            text-align: left;
-            word-break: break-word;
-        }
-
-        .card-detail-item.cpf-item strong {
-            margin-bottom: 0;
-        }
-        .card-detail-item.cpf-item span {
-            margin-top: 0;
-        }
-
-        .card-footer-datetime {
+        .reg-number {
             position: absolute;
-            bottom: 15px;
+            top: 15px;
             right: 20px;
-            font-size: 0.8em;
-            color: var(--text-light);
-            font-weight: 400;
+            font-weight: 800;
+            color: #4CAF50;
+            font-size: 1.1rem;
         }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 15px;
-            }
-            .container {
-                padding: 25px;
-                margin: 25px auto;
-            }
-            #pageTitle {
-                font-size: 2.2rem;
-                margin-bottom: 30px;
-            }
-            .filters-area {
+        .member-function {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #4CAF50;
+            text-transform: uppercase;
+        }
+        .info-label {
+            font-size: 0.65rem;
+            color: #64748b;
+            font-weight: 700;
+            text-transform: uppercase;
+            display: block;
+        }
+        .info-value {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #334155;
+        }
+        .history-box {
+            background-color: #f8fafc;
+            font-size: 0.75rem;
+            color: #64748b;
+        }
+        /* Ajuste para filtros no mobile */
+        @media (max-width: 576px) {
+            .btn-group-mobile {
+                display: flex;
                 flex-direction: column;
-                align-items: stretch;
-                gap: 12px;
-                margin-bottom: 30px;
-            }
-            .filter-group {
-                min-width: unset;
-                width: 100%;
-            }
-            .filters-area button {
-                width: 100%;
-                margin-top: 5px;
-                padding: 10px 20px;
-            }
-            #membersGrid {
-                grid-template-columns: 1fr;
-                gap: 25px;
-                margin-top: 30px;
-            }
-            .member-card {
-                padding: 20px;
-                border-radius: 12px;
-            }
-            .card-photo {
-                width: 100px;
-                height: 100px;
-                border-width: 4px;
-            }
-            .card-name {
-                font-size: 1.4rem;
-            }
-            .card-detail-item strong {
-                font-size: 0.9em;
-            }
-            .card-detail-item span {
-                font-size: 0.9em;
-            }
-            .card-id {
-                top: 10px;
-                right: 15px;
-                font-size: 0.8em;
-            }
-            .card-footer-datetime {
-                bottom: 10px;
-                right: 15px;
-                font-size: 0.7em;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 15px;
-                margin: 15px auto;
-            }
-            #pageTitle {
-                font-size: 1.8rem;
-                margin-bottom: 25px;
-            }
-            .filters-area input,
-            .filters-area select,
-            .filters-area button {
-                font-size: 0.9em;
-            }
-            .card-photo {
-                width: 100px;
-                height: 100px;
-            }
-            .card-name {
-                font-size: 1.2rem;
+                gap: 10px;
             }
         }
     </style>
 </head>
 <body>
 
-<div class="container" role="main" aria-labelledby="pageTitle">
-    <h2 id="pageTitle">ADpaz - Cidade Praia</h2>
-    <p style="font-size: 18px; font-weight: normal; color: #555; margin-top: -20px;">
-        Relatório de membros da congregação
-    </p>
+<div class="container py-4">
+    <div class="text-center mb-4">
+        <h1 class="header-title">ADpaz Cidade Praia</h1>
+        <p class="text-muted">Relatório de Membros da Congregação</p>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body p-4">
+            <div class="row g-3">
+                <div class="col-md-4 col-sm-6">
+                    <label class="info-label mb-1">Mês Aniversário</label>
+                    <select id="filterMonth" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+                        <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
+                        <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+                        <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+                    </select>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <label class="info-label mb-1">Mês Casamento</label>
+                    <select id="filterWeddingMonth" class="form-select">
+                        <option value="">Todos</option>
+                        <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+                        <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
+                        <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+                        <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+                    </select>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <label class="info-label mb-1">Função</label>
+                    <select id="filterFuncao" class="form-select"><option value="">Todas</option></select>
+                </div>
+                <div class="col-md-6 col-sm-6">
+                    <label class="info-label mb-1">Cargo</label>
+                    <select id="filterCargo" class="form-select"><option value="">Todos</option></select>
+                </div>
+                <div class="col-md-6 col-sm-12">
+                    <label class="info-label mb-1">Situação</label>
+                    <select id="filterSituacao" class="form-select"><option value="">Todas</option></select>
+                </div>
+            </div>
+            <div class="row mt-4 btn-group-mobile">
+                <div class="col-md-8">
+                    <button id="filterButton" class="btn btn-success w-100 fw-bold">Aplicar Filtros</button>
+                </div>
+                <div class="col-md-4">
+                    <button id="resetButton" class="btn btn-secondary w-100 fw-bold">Limpar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="statusMsg" class="text-center fw-bold text-success mb-3">Sincronizando dados...</div>
+
+    <div id="membersGrid" class="row g-4"></div>
 </div>
-
-<div class="filters-area">
-    <div class="filter-group">
-        <label for="searchNameOrCpf">Buscar por CPF:</label>
-        <input type="text" id="searchNameOrCpf" placeholder="Digite o CPF do membro">
-    </div>
-    <div class="filter-group">
-        <label for="filterMonth">Aniversariante do Mês:</label>
-        <select id="filterMonth">
-            <option value="">Todos</option>
-            <option value="1">Janeiro</option>
-            <option value="2">Fevereiro</option>
-            <option value="3">Março</option>
-            <option value="4">Abril</option>
-            <option value="5">Maio</option>
-            <option value="6">Junho</option>
-            <option value="7">Julho</option>
-            <option value="8">Agosto</option>
-            <option value="9">Setembro</option>
-            <option value="10">Outubro</option>
-            <option value="11">Novembro</option>
-            <option value="12">Dezembro</option>
-        </select>
-    </div>
-    <div class="filter-group">
-        <label for="filterFuncao">Função Eclesiástica:</label>
-        <select id="filterFuncao">
-            <option value="">Todos</option>
-            <option value="Pastor(a)">Pastor(a)</option>
-            <option value="Presbítero">Presbítero</option>
-            <option value="Diácono/Diaconisa">Diácono/Diaconisa</option>
-            <option value="Membro">Membro</option>
-            <option value="Cooperador(a)">Cooperador(a)</option>
-            <option value="Congregado(a)">Congregado(a)</option>
-            <option value="Novo(a) Decidido(a)">Novo(a) Decidido(a)</option>
-        </select>
-    </div>
-    <div class="filter-group">
-        <label for="filterCargo">Cargo/Ministério:</label>
-        <select id="filterCargo">
-            <option value="">Todos</option>
-            <option value="Pastor Dirigente">Pastor Dirigente</option>
-            <option value="Prof Escola Bíblica">Prof Escola Bíblica</option>
-            <option value="Secretário(a)">Secretário(a)</option>
-            <option value="Lider Louvor">Lider Louvor</option>
-            <option value="Músico">Músico</option>
-            <option value="Assistente de Recepção">Recepcionista</option>
-            <option value="Assistente de Mídia">Assistente de Mídia</option>
-            <option value="Assistente de Manuntenção">Assistente de Manuntenção</option>
-            <option value="Outro_Campo">Outro</option> </select>
-    </div>
-    <div class="filter-group">
-        <label for="filterEstadoCivil">Estado Civil:</label>
-        <select id="filterEstadoCivil">
-            <option value="">Todos</option>
-            <option value="Solteiro(a)">Solteiro(a)</option>
-            <option value="Casado(a)">Casado(a)</option>
-            <option value="Divorciado(a)">Divorciado(a)</option>
-            <option value="Viúvo(a)">Viúvo(a)</option>
-            <option value="Uniao Estavel">União Estável</option>
-        </select>
-    </div>
-    <div class="filter-group">
-        <label for="filterOutro">Situação na Igreja:</label>
-        <select id="filterOutro">
-            <option value="">Todas</option>
-            <option value="Em Atividade">Em atividade</option>
-            <option value="Ausente">Ausente</option>
-            <option value="Inconstante">Inconstante</option>
-            <option value="Mudou-se">Mudou-se</option>
-            <option value="Afastado">Afastado</option>
-        </select>
-    </div>
-    <button id="filterButton">Aplicar Filtros</button>
-    <button id="resetButton">Limpar Filtros</button>
-</div>
-
-<div id="memberCountDisplay"></div>
-<div id="loadingMessage">Carregando dados...</div>
-<div id="errorMessage" style="display:none;"></div>
-<div id="noDataMessage" style="display:none;">Nenhum membro encontrado com os critérios de filtro.</div>
-
-<div id="membersGrid"></div>
 
 <script>
-    const scriptURL_GET = 'https://script.google.com/macros/s/AKfycbzjVTT8rCWGU8WhzrnRjbiuI6iecUvJbh0iKjEZ_L0ps_j2b37cZKsZtxGrFp2WyLz6/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzjVTT8rCWGU8WhzrnRjbiuI6iecUvJbh0iKjEZ_L0ps_j2b37cZKsZtxGrFp2WyLz6/exec';
+    let members = [];
 
-    const membersGrid = document.getElementById('membersGrid');
-    const loadingMessage = document.getElementById('loadingMessage');
-    const errorMessage = document.getElementById('errorMessage');
-    const noDataMessage = document.getElementById('noDataMessage');
-    const memberCountDisplay = document.getElementById('memberCountDisplay');
-
-    const searchNameOrCpfInput = document.getElementById('searchNameOrCpf');
-    const filterMonthSelect = document.getElementById('filterMonth');
-    const filterFuncaoSelect = document.getElementById('filterFuncao');
-    const filterCargoSelect = document.getElementById('filterCargo');
-    const filterEstadoCivilSelect = document.getElementById('filterEstadoCivil');
-    const filterOutroSelect = document.getElementById('filterOutro');
-    const filterButton = document.getElementById('filterButton');
-    const resetButton = document.getElementById('resetButton');
-
-    let allMembersData = [];
-    let typingTimer;
-
-    // Lista de cargos ministeriais pré-definidos (em minúsculas)
-    // Usaremos essa lista para verificar se um cargo é "outro" (não pré-definido)
-    const predefinedCargos = [
-        "pastor dirigente",
-        "prof escola bíblica",
-        "secretário(a)",
-        "lider louvor",
-        "músico",
-        "assistente de recepção",
-        "recepcionista", // Adicionei 'recepcionista' pois pode ser o valor real salvo
-        "assistente de mídia",
-        "assistente de manuntenção"
-    ].map(cargo => cargo.toLowerCase());
-
-    function formatarCPF(cpf) {
-        if (!cpf) return '';
-        cpf = String(cpf).replace(/\D/g, '');
-        if (cpf.length === 11) {
-            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
-        }
-        return cpf;
-    }
-
-    function formatarTelefone(telefone) {
-        if (!telefone) return '';
-        telefone = String(telefone).replace(/\D/g, '');
-        if (telefone.length === 11) {
-            return telefone.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
-        } else if (telefone.length === 10) {
-            return telefone.replace(/^(\d{2})(\d{4})(\d{4})$/, '($1) $2-$3');
-        }
-        return telefone;
-    }
-
-    /**
-     * Tenta parsear uma string de data e retorna o mês (1-12).
-     * Dá prioridade a formatos ISO 8601, depois DD/MM/YYYY e YYYY-MM-DD.
-     * @param {string} dateString - A string da data.
-     * @returns {number|null} O número do mês (1-12) ou null se não puder ser parseado.
-     */
-    function parseDateForMonth(dateString) {
-        if (!dateString) {
-            console.log(`  parseDateForMonth: String de data vazia ou nula.`);
-            return null;
-        }
-        dateString = String(dateString).trim();
-        console.log(`  parseDateForMonth: Tentando parsear "${dateString}"`);
-
-        let dateObj = new Date(dateString);
-        if (!isNaN(dateObj.getTime())) {
-            console.log(`  parseDateForMonth: Sucesso com new Date() padrão (provavelmente ISO 8601). Mês: ${dateObj.getMonth() + 1}`);
-            return dateObj.getMonth() + 1;
-        }
-
-        // Tentar formato DD/MM/YYYY
-        let parts = dateString.split('/');
-        if (parts.length === 3) {
-            const [day, month, year] = parts.map(Number);
-            if (!isNaN(day) && !isNaN(month) && !isNaN(year) && month >= 1 && month <= 12) {
-                dateObj = new Date(year, month - 1, day);
-                if (dateObj.getDate() === day && dateObj.getMonth() === month - 1) { // Validação simples
-                    console.log(`  parseDateForMonth: Sucesso no formato DD/MM/YYYY. Mês: ${dateObj.getMonth() + 1}`);
-                    return dateObj.getMonth() + 1;
-                }
-            }
-        }
-
-        // Tentar formato YYYY-MM-DD
-        parts = dateString.split('-');
-        if (parts.length === 3) {
-            const [year, month, day] = parts.map(Number);
-            if (!isNaN(day) && !isNaN(month) && !isNaN(year) && month >= 1 && month <= 12) {
-                dateObj = new Date(year, month - 1, day);
-                if (dateObj.getDate() === day && dateObj.getMonth() === month - 1) { // Validação simples
-                    console.log(`  parseDateForMonth: Sucesso no formato YYYY-MM-DD. Mês: ${dateObj.getMonth() + 1}`);
-                    return dateObj.getMonth() + 1;
-                }
-            }
-        }
-
-        console.log(`  parseDateForMonth: Não foi possível parsear a data "${dateString}" para um mês válido.`);
-        return null; // Não foi possível parsear
-    }
-
-    async function fetchMembersData() {
-        loadingMessage.style.display = 'block';
-        errorMessage.style.display = 'none';
-        noDataMessage.style.display = 'none';
-        membersGrid.innerHTML = '';
-        memberCountDisplay.textContent = '';
-
+    async function loadData() {
         try {
-            const response = await fetch(scriptURL_GET);
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Erro ao buscar dados: ${response.status} ${response.statusText} - ${errorText}`);
-            }
-            const data = await response.json();
-
-            loadingMessage.style.display = 'none';
-
-            if (data.error) {
-                errorMessage.textContent = `Erro do Script: ${data.error}`;
-                errorMessage.style.display = 'block';
-                return;
-            }
-
-            allMembersData = data;
-            applyFilters();
-
-        } catch (error) {
-            loadingMessage.style.display = 'none';
-            errorMessage.textContent = `Erro ao carregar dados: ${error.message}`;
-            errorMessage.style.display = 'block';
-            console.error("Erro ao buscar dados:", error);
+            const resp = await fetch(scriptURL);
+            members = await resp.json();
+            document.getElementById('statusMsg').innerText = `Total: ${members.length} membros carregados`;
+            setupFilters();
+            render(members);
+        } catch (e) {
+            document.getElementById('statusMsg').innerText = "Erro ao carregar dados.";
         }
     }
 
-    function formatValue(key, value) {
-        if (value === undefined || value === null || String(value).trim() === '') {
-            return 'Não informado';
-        }
-
-        // Formatação de data/hora de cadastro
-        if (key === 'datahora' && typeof value === 'string') {
-            try {
-                const dateObj = new Date(value); // Tenta parsear diretamente
-                if (!isNaN(dateObj.getTime())) {
-                    const year = dateObj.getFullYear();
-                    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-                    const day = String(dateObj.getDate()).padStart(2, '0');
-                    const hours = String(dateObj.getHours()).padStart(2, '0');
-                    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
-                    const seconds = String(dateObj.getSeconds()).padStart(2, '0');
-                    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}h`;
-                }
-            } catch (e) {
-                console.warn(`Erro ao formatar data/hora para '${key}':`, value, e);
-            }
-        }
-
-        // Formatação de data de nascimento e casamento (apenas para exibição)
-        if ((key === 'nascimento' || key === 'datacasamento') && typeof value === 'string') {
-            const dateObj = new Date(value);
-            if (!isNaN(dateObj.getTime())) {
-                console.log(`  formatValue: Data '${value}' parseada com sucesso para exibição. Resultado: ${dateObj.toLocaleDateString('pt-BR')}`);
-                return dateObj.toLocaleDateString('pt-BR');
-            }
-            console.log(`  formatValue: Não foi possível parsear a data '${value}' para exibição.`);
-            return value; // Retorna o valor original se não puder formatar
-        }
-
-        if (key === 'cpf') return formatarCPF(value);
-        if (key === 'telefone') return formatarTelefone(value);
-
-        return value;
-    }
-
-    function getLabelFromKey(key) {
-        const labelMap = {
-            'id': 'ID',
-            'datahora': 'Data/Hora Cadastro',
-            'nome': 'Nome Completo',
-            'cpf': 'CPF',
-            'nascimento': 'Data de Nascimento',
-            'endereco': 'Endereço',
-            'email': 'Email',
-            'telefone': 'Telefone',
-            'estadocivil': 'Estado Civil',
-            'datacasamento': 'Data Casamento',
-            'funcao': 'Função',
-            'cargo': 'Cargo',
-            'historico': 'Histórico',
-            'outro': 'Situação na Igreja'
-        };
-        return labelMap[key] || key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1');
-    }
-
-    function createDetailItem(label, value, key) {
-        if (!value || String(value).trim().toLowerCase() === 'não informado') return null;
-
-        const detailItem = document.createElement('div');
-        detailItem.classList.add('card-detail-item');
-        if (key === 'cpf') {
-            detailItem.classList.add('cpf-item');
-        }
-
-        const strong = document.createElement('strong');
-        strong.textContent = label + ':';
-        detailItem.appendChild(strong);
-
-        const span = document.createElement('span');
-        span.textContent = value;
-        detailItem.appendChild(span);
-
-        return detailItem;
-    }
-
-    function createMemberCard(member) {
-        const card = document.createElement('div');
-        card.classList.add('member-card');
-        card.style.position = 'relative';
-
-        const memberId = document.createElement('div');
-        memberId.classList.add('card-id');
-        memberId.textContent = String(member.id || '').padStart(4, '0').slice(-4);
-        card.appendChild(memberId);
-
-        const photo = document.createElement('img');
-        const photoData = member.foto;
-
-        if (photoData && typeof photoData === 'string' && photoData.length > 0) {
-            photo.src = `data:image/jpeg;base64,${photoData}`;
-        } else {
-            photo.src = 'https://via.placeholder.com/180?text=Sem+Foto';
-        }
-        photo.alt = `Foto de ${member.nome || 'Membro'}`;
-        photo.classList.add('card-photo');
-        photo.onerror = function() {
-            this.onerror = null;
-            this.src = 'https://via.placeholder.com/180?text=Sem+Foto';
-        };
-        card.appendChild(photo);
-
-        const name = document.createElement('h2');
-        name.classList.add('card-name');
-        name.textContent = member.nome || 'Nome Indisponível';
-        card.appendChild(name);
-
-        const detailsList = document.createElement('div');
-        detailsList.classList.add('card-details-list');
-
-        const fieldsToDisplay = [
-            'cpf', 'nascimento', 'telefone', 'email', 'endereco',
-            'estadocivil', 'datacasamento', 'funcao', 'cargo', 'historico', 'outro'
-        ];
-
-        fieldsToDisplay.forEach(key => {
-            if (key === 'datacasamento' &&
-                (String(member.estadocivil || '').toLowerCase() !== 'casado' &&
-                 String(member.estadocivil || '').toLowerCase() !== 'uniao estavel')) {
-                return;
-            }
-
-            const label = getLabelFromKey(key);
-            const value = formatValue(key, member[key]);
-            const detailItem = createDetailItem(label, value, key);
-            if (detailItem) detailsList.appendChild(detailItem);
-        });
-
-        card.appendChild(detailsList);
-
-        const dateTimeFooter = document.createElement('div');
-        dateTimeFooter.classList.add('card-footer-datetime');
-        dateTimeFooter.textContent = formatValue('datahora', member.datahora);
-        card.appendChild(dateTimeFooter);
-
-        return card;
-    }
-
-    function applyFilters() {
-        clearTimeout(typingTimer);
-
-        const searchTerm = searchNameOrCpfInput.value.toLowerCase().trim();
-        const selectedMonth = filterMonthSelect.value;
-        const selectedFuncao = filterFuncaoSelect.value.toLowerCase();
-        const selectedCargo = filterCargoSelect.value.toLowerCase(); // Agora pode ser "outro_campo"
-        const selectedEstadoCivil = filterEstadoCivilSelect.value.toLowerCase();
-        const selectedOutro = filterOutroSelect.value.toLowerCase();
-
-        console.log("--- Aplicando Filtros ---");
-        console.log("Termo de Busca (CPF/Nome):", searchTerm);
-        console.log("Mês Selecionado (Filtro):", selectedMonth);
-        console.log("Função Selecionada:", selectedFuncao);
-        console.log("Cargo Selecionado:", selectedCargo); // Pode ser "outro_campo"
-        console.log("Estado Civil Selecionado:", selectedEstadoCivil);
-        console.log("Situação na Igreja Selecionada:", selectedOutro);
-
-        let filteredMembers = allMembersData.filter(member => {
-            const memberName = String(member.nome || '').toLowerCase();
-            const memberCpf = String(member.cpf || '').toLowerCase().replace(/\D/g, '');
-            const memberFuncao = String(member.funcao || '').toLowerCase();
-            const memberCargo = String(member.cargo || '').toLowerCase(); // Valor do cargo do membro
-
-            const memberEstadoCivil = String(member.estadocivil || '').toLowerCase();
-            const memberOutro = String(member.outro || '').toLowerCase();
-
-            // Lógica para o filtro de Aniversariante do Mês
-            let matchesMonth = true;
-            if (selectedMonth !== '') {
-                const birthDateString = String(member.nascimento || '');
-                const memberMonth = parseDateForMonth(birthDateString); // Usa a função de parse
-                const filterMonthNum = parseInt(selectedMonth, 10);
-
-                matchesMonth = (memberMonth !== null && memberMonth === filterMonthNum);
-            }
-
-            // Lógica para o filtro de Cargo/Ministério com a opção "Outra"
-            let matchesCargo = true;
-            if (selectedCargo !== '') {
-                if (selectedCargo === "outro_campo") {
-                    // Se o filtro é "Outra", verificamos se o cargo do membro NÃO está na lista de pré-definidos
-                    matchesCargo = memberCargo !== '' && !predefinedCargos.includes(memberCargo);
-                    console.log(`  Cargo do Membro (${memberCargo}) - É "Outro_Campo"? ${matchesCargo}`);
-                } else {
-                    // Caso contrário, compara com o valor pré-definido
-                    matchesCargo = memberCargo === selectedCargo;
-                    console.log(`  Cargo do Membro (${memberCargo}) - Corresponde a ${selectedCargo}? ${matchesCargo}`);
-                }
-            }
-
-
-            const matchesSearchTerm = searchTerm === '' || memberName.includes(searchTerm) || memberCpf.includes(searchTerm.replace(/\D/g, ''));
-            const matchesFuncao = selectedFuncao === '' || memberFuncao === selectedFuncao;
-            const matchesEstadoCivil = selectedEstadoCivil === '' || memberEstadoCivil === selectedEstadoCivil;
-            const matchesOutro = selectedOutro === '' || memberOutro === selectedOutro;
-
-            const overallMatch = matchesSearchTerm && matchesMonth && matchesFuncao && matchesCargo && matchesEstadoCivil && matchesOutro;
-            // Descomente a linha abaixo para ver cada membro e seu status de correspondência
-            // console.log(`  Correspondência geral para ${member.nome}: ${overallMatch}`);
-            return overallMatch;
-        });
-
-        // Ordenar por dia de nascimento se um mês específico for selecionado
-        if (selectedMonth !== '') {
-            filteredMembers.sort((a, b) => {
-                const getDayFromBirthDate = (dateStr) => {
-                    if (!dateStr) return 0;
-                    const dateObj = new Date(dateStr);
-                    return isNaN(dateObj.getTime()) ? 0 : dateObj.getDate();
-                };
-
-                const dayA = getDayFromBirthDate(a.nascimento);
-                const dayB = getDayFromBirthDate(b.nascimento);
-                return dayA - dayB;
+    function setupFilters() {
+        const getUniques = (k1, k2) => [...new Set(members.map(m => m[k1] || m[k2]))].filter(v => v).sort();
+        const fill = (id, vals) => {
+            const el = document.getElementById(id);
+            vals.forEach(v => {
+                const opt = document.createElement('option');
+                opt.value = v; opt.textContent = v;
+                el.appendChild(opt);
             });
-        }
-
-        displayMembersGrid(filteredMembers);
+        };
+        fill('filterFuncao', getUniques('funcao', 'funcaoeclesiastica'));
+        fill('filterCargo', getUniques('cargo', 'cargo'));
+        fill('filterSituacao', getUniques('outro', 'situacao'));
     }
 
-    function displayMembersGrid(membersToDisplay) {
-        membersGrid.innerHTML = '';
-        memberCountDisplay.textContent = `Membros encontrados: ${membersToDisplay.length}`;
+    function render(data) {
+        const grid = document.getElementById('membersGrid');
+        grid.innerHTML = '';
+        
+        data.forEach(m => {
+            const f_funcao = m.funcao || m.funcaoeclesiastica || 'Membro';
+            const f_reg = String(m.registro || m.id || '0').padStart(3, '0');
+            const ehCasado = String(m.estadocivil || '').toLowerCase().includes('casado') || String(m.estadocivil || '').toLowerCase().includes('uniao');
+            const foto = m.foto ? (m.foto.startsWith('http') ? m.foto : `data:image/jpeg;base64,${m.foto}`) : 'https://via.placeholder.com/120?text=ADpaz';
 
-        if (membersToDisplay.length === 0) {
-            noDataMessage.style.display = 'block';
-        } else {
-            noDataMessage.style.display = 'none';
-            membersToDisplay.forEach(member => {
-                const card = createMemberCard(member);
-                membersGrid.appendChild(card);
-            });
-        }
+            const cardCol = document.createElement('div');
+            cardCol.className = 'col-12 col-md-6 col-lg-4';
+            
+            cardCol.innerHTML = `
+                <div class="card h-100 shadow-sm border-0 position-relative">
+                    <div class="reg-number">${f_reg}</div>
+                    <div class="card-body text-center pt-4">
+                        <div class="photo-container rounded-3 mb-3">
+                            <img src="${foto}" alt="${m.nome}" loading="lazy">
+                        </div>
+                        <h5 class="card-title fw-800 mb-1 text-uppercase">${m.nome || 'Não informado'}</h5>
+                        <p class="member-function mb-3">${f_funcao}</p>
+                        
+                        <div class="text-start border-top pt-3">
+                            <div class="mb-2"><span class="info-label">Cargo</span><span class="info-value">${m.cargo || '---'}</span></div>
+                            <div class="mb-2"><span class="info-label">Telefone</span><span class="info-value">${m.telefone || '---'}</span></div>
+                            <div class="mb-2"><span class="info-label">Estado Civil</span><span class="info-value">${m.estadocivil || '---'}</span></div>
+                            <div class="mb-2"><span class="info-label">Nascimento</span><span class="info-value">${m.nascimento ? new Date(m.nascimento).toLocaleDateString('pt-BR') : '---'}</span></div>
+                            ${ehCasado ? `<div class="mb-2"><span class="info-label">Casamento</span><span class="info-value">${m.datacasamento ? new Date(m.datacasamento).toLocaleDateString('pt-BR') : '---'}</span></div>` : ''}
+                            <div class="mb-2"><span class="info-label">Endereço</span><span class="info-value small text-muted">${m.endereco || '---'}</span></div>
+                            <div class="mb-2"><span class="info-label">Situação</span><span class="badge bg-success-subtle text-success">${m.outro || m.situacao || 'Em Atividade'}</span></div>
+                        </div>
+                    </div>
+                    <div class="card-footer history-box border-0 px-3 pb-3">
+                        <strong>Histórico:</strong><br>
+                        ${m.historico || '---'}
+                    </div>
+                </div>
+            `;
+            grid.appendChild(cardCol);
+        });
     }
 
-    filterButton.addEventListener('click', applyFilters);
+    document.getElementById('filterButton').onclick = () => {
+        const mAniv = document.getElementById('filterMonth').value;
+        const mWed = document.getElementById('filterWeddingMonth').value;
+        const func = document.getElementById('filterFuncao').value;
+        const cargo = document.getElementById('filterCargo').value;
+        const sit = document.getElementById('filterSituacao').value;
 
-    searchNameOrCpfInput.addEventListener('input', () => {
-        clearTimeout(typingTimer);
-        typingTimer = setTimeout(applyFilters, 300);
-    });
+        const filtered = members.filter(m => {
+            const dAniv = m.nascimento ? new Date(m.nascimento) : null;
+            const dWed = m.datacasamento ? new Date(m.datacasamento) : null;
+            const mesAniv = dAniv ? dAniv.getUTCMonth() + 1 : null;
+            const mesWed = dWed ? dWed.getUTCMonth() + 1 : null;
+            
+            return (!mAniv || mesAniv == mAniv) &&
+                   (!mWed || mesWed == mWed) &&
+                   (!func || (m.funcao || m.funcaoeclesiastica) === func) &&
+                   (!cargo || m.cargo === cargo) &&
+                   (!sit || (m.outro || m.situacao) === sit);
+        });
+        render(filtered);
+        document.getElementById('statusMsg').innerText = `Resultados: ${filtered.length} encontrados`;
+    };
 
-    filterMonthSelect.addEventListener('change', applyFilters);
-    filterFuncaoSelect.addEventListener('change', applyFilters);
-    filterCargoSelect.addEventListener('change', applyFilters);
-    filterEstadoCivilSelect.addEventListener('change', applyFilters);
-    filterOutroSelect.addEventListener('change', applyFilters);
+    document.getElementById('resetButton').onclick = () => {
+        document.querySelectorAll('select').forEach(s => s.value = '');
+        render(members);
+        document.getElementById('statusMsg').innerText = `Total: ${members.length} membros`;
+    };
 
-    resetButton.addEventListener('click', () => {
-        searchNameOrCpfInput.value = '';
-        filterMonthSelect.value = '';
-        filterFuncaoSelect.value = '';
-        filterCargoSelect.value = '';
-        filterEstadoCivilSelect.value = '';
-        filterOutroSelect.value = '';
-        applyFilters();
-    });
-
-    document.addEventListener('DOMContentLoaded', fetchMembersData);
+    loadData();
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
