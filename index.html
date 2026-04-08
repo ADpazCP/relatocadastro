@@ -3,239 +3,314 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Relatório de Membros - ADpaz</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>ADpaz - Gestão de Membros</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-hover: #43a047;
+            --bg-body: #f8fafc;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --card-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --border-color: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding: 20px;
+            line-height: 1.5;
         }
-        .header-title {
-            color: #4CAF50;
+
+        .header-section {
+            max-width: 1400px;
+            margin: 0 auto 30px;
+            text-align: center;
+        }
+
+        .header-section h1 {
+            font-size: 1.5rem;
             font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 5px;
         }
-        /* Estilização da Foto Quadrada Arredondada */
-        .photo-container {
-            width: 120px;
-            height: 120px;
+
+        /* --- FILTROS --- */
+        .filter-container {
+            max-width: 1400px;
+            margin: 0 auto 40px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-item { flex: 1 1 180px; display: flex; flex-direction: column; gap: 8px; }
+
+        @media (max-width: 768px) {
+            .filter-item { flex: 1 1 100%; }
+            .btn-group { flex-direction: column; }
+        }
+
+        .filter-item label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .filter-item input, .filter-item select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn-group { display: flex; gap: 10px; flex: 1 1 100%; margin-top: 10px; }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: 0.2s;
+        }
+
+        #filterButton { background: var(--primary); color: white; }
+        #resetButton { background: #64748b; color: white; }
+
+        /* --- GRID E CARDS --- */
+        #membersGrid {
+            max-width: 1400px;
             margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .member-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-top-accent { height: 6px; background: var(--primary); }
+
+        .card-header { text-align: center; padding: 20px; }
+
+        .photo-container {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
             overflow: hidden;
             border: 3px solid #f1f5f9;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        .photo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .reg-number {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            font-weight: 800;
-            color: #4CAF50;
+
+        .photo-container img { width: 100%; height: 100%; object-fit: cover; }
+
+        .member-name {
             font-size: 1.1rem;
-        }
-        .member-function {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: #4CAF50;
+            font-weight: 800;
+            color: var(--text-main);
             text-transform: uppercase;
+            margin-bottom: 5px;
         }
-        .info-label {
-            font-size: 0.65rem;
-            color: #64748b;
-            font-weight: 700;
-            text-transform: uppercase;
-            display: block;
-        }
-        .info-value {
+
+        .member-sub {
             font-size: 0.85rem;
             font-weight: 600;
-            color: #334155;
+            color: var(--primary);
+            text-transform: uppercase;
         }
-        .history-box {
-            background-color: #f8fafc;
+
+        .info-body { padding: 15px 20px; flex-grow: 1; }
+
+        .info-row {
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid #f8fafc;
+            padding-bottom: 5px;
+        }
+
+        .info-label { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; }
+        .info-value { font-size: 0.9rem; font-weight: 600; color: #334155; }
+
+        .card-footer {
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .history-text { font-size: 0.8rem; color: var(--text-muted); font-style: italic; }
+
+        .status-badge {
             font-size: 0.75rem;
-            color: #64748b;
-        }
-        /* Ajuste para filtros no mobile */
-        @media (max-width: 576px) {
-            .btn-group-mobile {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-            }
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+            background: #e8f5e9;
+            color: #2e7d32;
         }
     </style>
 </head>
 <body>
 
-<div class="container py-4">
-    <div class="text-center mb-4">
-        <h1 class="header-title">ADpaz Cidade Praia</h1>
-        <p class="text-muted">Relatório de Membros da Congregação</p>
-    </div>
-
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body p-4">
-            <div class="row g-3">
-                <div class="col-md-4 col-sm-6">
-                    <label class="info-label mb-1">Mês Aniversário</label>
-                    <select id="filterMonth" class="form-select">
-                        <option value="">Todos</option>
-                        <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
-                        <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
-                        <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
-                        <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
-                    </select>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <label class="info-label mb-1">Mês Casamento</label>
-                    <select id="filterWeddingMonth" class="form-select">
-                        <option value="">Todos</option>
-                        <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
-                        <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
-                        <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
-                        <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
-                    </select>
-                </div>
-                <div class="col-md-4 col-sm-6">
-                    <label class="info-label mb-1">Função</label>
-                    <select id="filterFuncao" class="form-select"><option value="">Todas</option></select>
-                </div>
-                <div class="col-md-6 col-sm-6">
-                    <label class="info-label mb-1">Cargo</label>
-                    <select id="filterCargo" class="form-select"><option value="">Todos</option></select>
-                </div>
-                <div class="col-md-6 col-sm-12">
-                    <label class="info-label mb-1">Situação</label>
-                    <select id="filterSituacao" class="form-select"><option value="">Todas</option></select>
-                </div>
-            </div>
-            <div class="row mt-4 btn-group-mobile">
-                <div class="col-md-8">
-                    <button id="filterButton" class="btn btn-success w-100 fw-bold">Aplicar Filtros</button>
-                </div>
-                <div class="col-md-4">
-                    <button id="resetButton" class="btn btn-secondary w-100 fw-bold">Limpar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="statusMsg" class="text-center fw-bold text-success mb-3">Sincronizando dados...</div>
-
-    <div id="membersGrid" class="row g-4"></div>
+<div class="header-section">
+    <h1>ADpaz Cidade Praia</h1>
+    <p>Relatório Consolidado de Membros</p>
 </div>
 
-<script>
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbyNNbsOdiqyJlYcPoGX0n0NgAImJKVj8dotNg2pUCvFQRLVVv8DTdykkEDcVMu8JngV/exec';
-    let members = [];
+<div class="filter-container">
+    <div class="filter-item">
+        <label>Buscar por CPF</label>
+        <input type="text" id="searchCpf" placeholder="000.000.000-00">
+    </div>
+    <div class="filter-item">
+        <label>Mês Aniversário</label>
+        <select id="filterMonth">
+            <option value="">Todos</option>
+            <option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option>
+            <option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option>
+            <option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option>
+            <option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option>
+        </select>
+    </div>
+    <div class="filter-item">
+        <label>Função</label>
+        <select id="filterFuncao"><option value="">Todas</option></select>
+    </div>
+    <div class="filter-item">
+        <label>Cargo</label>
+        <select id="filterCargo"><option value="">Todos</option></select>
+    </div>
+    <div class="filter-item">
+        <label>Situação</label>
+        <select id="filterSituacao">
+            <option value="">Todas</option>
+            <option value="Em Atividade">Em Atividade</option>
+            <option value="Inativo">Inativo</option>
+        </select>
+    </div>
+    <div class="btn-group">
+        <button id="filterButton">Aplicar Filtros</button>
+        <button id="resetButton">Limpar Tudo</button>
+    </div>
+</div>
 
-    async function loadData() {
+<div id="memberCountDisplay" style="text-align:center; font-weight:800; color:var(--text-muted); margin-bottom:20px;"></div>
+<div id="loadingMessage" style="text-align:center; padding:40px; font-weight:600; color:var(--primary);">Sincronizando dados...</div>
+<div id="membersGrid"></div>
+
+<script>
+    const scriptURL_GET = 'https://script.google.com/macros/s/AKfycbyNNbsOdiqyJlYcPoGX0n0NgAImJKVj8dotNg2pUCvFQRLVVv8DTdykkEDcVMu8JngV/exec';
+    let allMembersData = [];
+
+    async function fetchMembersData() {
         try {
-            const resp = await fetch(scriptURL);
-            members = await resp.json();
-            document.getElementById('statusMsg').innerText = `Total: ${members.length} membros carregados`;
-            setupFilters();
-            render(members);
+            const response = await fetch(scriptURL_GET);
+            allMembersData = await response.json();
+            populateFilters();
+            applyFilters();
+            document.getElementById('loadingMessage').style.display = 'none';
         } catch (e) {
-            document.getElementById('statusMsg').innerText = "Erro ao carregar dados.";
+            document.getElementById('loadingMessage').innerText = "Erro ao conectar com a base de dados.";
         }
     }
 
-    function setupFilters() {
-        const getUniques = (k1, k2) => [...new Set(members.map(m => m[k1] || m[k2]))].filter(v => v).sort();
-        const fill = (id, vals) => {
+    function populateFilters() {
+        const getUnique = (key) => [...new Set(allMembersData.map(m => m[key]))].filter(v => v).sort();
+        const fill = (id, list) => {
             const el = document.getElementById(id);
-            vals.forEach(v => {
-                const opt = document.createElement('option');
-                opt.value = v; opt.textContent = v;
-                el.appendChild(opt);
-            });
+            list.forEach(v => el.innerHTML += `<option value="${v}">${v}</option>`);
         };
-        fill('filterFuncao', getUniques('funcao', 'funcaoeclesiastica'));
-        fill('filterCargo', getUniques('cargo', 'cargo'));
-        fill('filterSituacao', getUniques('outro', 'situacao'));
+        fill('filterFuncao', getUnique('funcao'));
+        fill('filterCargo', getUnique('cargo'));
     }
 
-    function render(data) {
-        const grid = document.getElementById('membersGrid');
-        grid.innerHTML = '';
+    function createMemberCard(member) {
+        const card = document.createElement('div');
+        card.classList.add('member-card');
         
-        data.forEach(m => {
-            const f_funcao = m.funcao || m.funcaoeclesiastica || 'Membro';
-            const f_reg = String(m.registro || m.id || '0').padStart(3, '0');
-            const ehCasado = String(m.estadocivil || '').toLowerCase().includes('casado') || String(m.estadocivil || '').toLowerCase().includes('uniao');
-            const foto = m.foto ? (m.foto.startsWith('http') ? m.foto : `data:image/jpeg;base64,${m.foto}`) : 'https://via.placeholder.com/120?text=ADpaz';
+        const dateFmt = (d) => d ? new Date(d).toLocaleDateString('pt-BR') : '---';
+        const photo = member.foto ? (member.foto.length > 100 ? `data:image/jpeg;base64,${member.foto}` : member.foto) : 'https://via.placeholder.com/150?text=Sem+Foto';
+        
+        const civil = String(member.estadocivil || '').toLowerCase();
+        const mostrarCasamento = civil.includes('casado') || civil.includes('uniao');
 
-            const cardCol = document.createElement('div');
-            cardCol.className = 'col-12 col-md-6 col-lg-4';
-            
-            cardCol.innerHTML = `
-                <div class="card h-100 shadow-sm border-0 position-relative">
-                    <div class="reg-number">${f_reg}</div>
-                    <div class="card-body text-center pt-4">
-                        <div class="photo-container rounded-3 mb-3">
-                            <img src="${foto}" alt="${m.nome}" loading="lazy">
-                        </div>
-                        <h5 class="card-title fw-800 mb-1 text-uppercase">${m.nome || 'Não informado'}</h5>
-                        <p class="member-function mb-3">${f_funcao}</p>
-                        
-                        <div class="text-start border-top pt-3">
-                            <div class="mb-2"><span class="info-label">Cargo</span><span class="info-value">${m.cargo || '---'}</span></div>
-                            <div class="mb-2"><span class="info-label">Telefone</span><span class="info-value">${m.telefone || '---'}</span></div>
-                            <div class="mb-2"><span class="info-label">Estado Civil</span><span class="info-value">${m.estadocivil || '---'}</span></div>
-                            <div class="mb-2"><span class="info-label">Nascimento</span><span class="info-value">${m.nascimento ? new Date(m.nascimento).toLocaleDateString('pt-BR') : '---'}</span></div>
-                            ${ehCasado ? `<div class="mb-2"><span class="info-label">Casamento</span><span class="info-value">${m.datacasamento ? new Date(m.datacasamento).toLocaleDateString('pt-BR') : '---'}</span></div>` : ''}
-                            <div class="mb-2"><span class="info-label">Endereço</span><span class="info-value small text-muted">${m.endereco || '---'}</span></div>
-                            <div class="mb-2"><span class="info-label">Situação</span><span class="badge bg-success-subtle text-success">${m.outro || m.situacao || 'Em Atividade'}</span></div>
-                        </div>
-                    </div>
-                    <div class="card-footer history-box border-0 px-3 pb-3">
-                        <strong>Histórico:</strong><br>
-                        ${m.historico || '---'}
-                    </div>
-                </div>
-            `;
-            grid.appendChild(cardCol);
-        });
+        card.innerHTML = `
+            <div class="card-top-accent"></div>
+            <div class="card-header">
+                <div class="photo-container"><img src="${photo}"></div>
+                <h2 class="member-name">${member.nome || 'MEMBRO'}</h2>
+                <div class="member-sub">${member.funcao || 'Membro'}</div>
+            </div>
+            <div class="info-body">
+                <div class="info-row"><span class="info-label">Cargo/Ministério</span><span class="info-value">${member.cargo || '---'}</span></div>
+                <div class="info-row"><span class="info-label">CPF</span><span class="info-value">${member.cpf || '---'}</span></div>
+                <div class="info-row"><span class="info-label">Nascimento</span><span class="info-value">${dateFmt(member.nascimento)}</span></div>
+                <div class="info-row"><span class="info-label">Telefone</span><span class="info-value">${member.telefone || '---'}</span></div>
+                <div class="info-row"><span class="info-label">Estado Civil</span><span class="info-value">${member.estadocivil || '---'}</span></div>
+                ${mostrarCasamento ? `<div class="info-row"><span class="info-label">Data Casamento</span><span class="info-value">${dateFmt(member.datacasamento)}</span></div>` : ''}
+                <div class="info-row"><span class="info-label">Situação</span><div><span class="status-badge">${member.outro || 'Em Atividade'}</span></div></div>
+                <div class="info-row"><span class="info-label">Endereço</span><span class="info-value" style="font-size:0.8rem">${member.endereco || '---'}</span></div>
+            </div>
+            <div class="card-footer">
+                <span class="info-label">Histórico Eclesiástico</span>
+                <p class="history-text">${member.historico || 'Sem registros históricos.'}</p>
+            </div>
+        `;
+        return card;
     }
 
-    document.getElementById('filterButton').onclick = () => {
-        const mAniv = document.getElementById('filterMonth').value;
-        const mWed = document.getElementById('filterWeddingMonth').value;
+    function applyFilters() {
+        const cpf = document.getElementById('searchCpf').value.toLowerCase();
+        const mes = document.getElementById('filterMonth').value;
         const func = document.getElementById('filterFuncao').value;
         const cargo = document.getElementById('filterCargo').value;
-        const sit = document.getElementById('filterSituacao').value;
+        const situacao = document.getElementById('filterSituacao').value;
 
-        const filtered = members.filter(m => {
-            const dAniv = m.nascimento ? new Date(m.nascimento) : null;
-            const dWed = m.datacasamento ? new Date(m.datacasamento) : null;
-            const mesAniv = dAniv ? dAniv.getUTCMonth() + 1 : null;
-            const mesWed = dWed ? dWed.getUTCMonth() + 1 : null;
-            
-            return (!mAniv || mesAniv == mAniv) &&
-                   (!mWed || mesWed == mWed) &&
-                   (!func || (m.funcao || m.funcaoeclesiastica) === func) &&
+        const filtered = allMembersData.filter(m => {
+            const mDate = m.nascimento ? new Date(m.nascimento) : null;
+            return (!cpf || (m.cpf && m.cpf.includes(cpf))) &&
+                   (!mes || (mDate && (mDate.getUTCMonth() + 1).toString() === mes)) &&
+                   (!func || m.funcao === func) &&
                    (!cargo || m.cargo === cargo) &&
-                   (!sit || (m.outro || m.situacao) === sit);
+                   (!situacao || m.outro === situacao);
         });
-        render(filtered);
-        document.getElementById('statusMsg').innerText = `Resultados: ${filtered.length} encontrados`;
-    };
 
-    document.getElementById('resetButton').onclick = () => {
-        document.querySelectorAll('select').forEach(s => s.value = '');
-        render(members);
-        document.getElementById('statusMsg').innerText = `Total: ${members.length} membros`;
-    };
+        const grid = document.getElementById('membersGrid');
+        grid.innerHTML = '';
+        filtered.forEach(m => grid.appendChild(createMemberCard(m)));
+        document.getElementById('memberCountDisplay').textContent = `Membros encontrados: ${filtered.length}`;
+    }
 
-    loadData();
+    document.getElementById('filterButton').addEventListener('click', applyFilters);
+    document.getElementById('resetButton').addEventListener('click', () => {
+        document.querySelectorAll('input, select').forEach(i => i.value = '');
+        applyFilters();
+    });
+
+    window.onload = fetchMembersData;
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
